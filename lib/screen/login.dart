@@ -34,86 +34,90 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Login'),
-          titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 25
-          ),
-          backgroundColor: Colors.blue ,
+      appBar: AppBar(
+        title: const Text('Login'),
+        titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 25
         ),
-        body: FutureBuilder(
-            future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform,
-            ),
-            builder: (context, snapshot) {
-              switch(snapshot.connectionState) {
-                case ConnectionState.done:
-                  return  Container(
-                      margin: EdgeInsets.all((30)),
-                      child:  Center(
-                          child: Column(
-                            children: [
-                              TextField(
-                                autofocus: true,
-                                controller: _email,
-                                decoration: InputDecoration(
-                                    hintText: 'Enter your email here'
-                                ),
-                              ),
-                              TextField(
-                                controller: _password,
-                                obscureText: true,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                decoration: InputDecoration(
-                                    hintText: 'Enter your password here'
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await Firebase.initializeApp(
-                                    options: DefaultFirebaseOptions.currentPlatform,
-                                  );
-                                  final email = _email.text;
-                                  final password = _password.text;
-                                  try {
-                                    final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                                        email: email, password: password
-                                    );
-                                    print(userCredential);
-                                  } on FirebaseAuthException catch(e) {
+        backgroundColor: Colors.blue ,
+      ),
+       body:  FutureBuilder(
+           future: Firebase.initializeApp(
+             options: DefaultFirebaseOptions.currentPlatform,
+           ),
+           builder: (context, snapshot) {
+             switch(snapshot.connectionState) {
+               case ConnectionState.done:
+                 return   Container(
+                     margin: EdgeInsets.all((30)),
+                     child:  Center(
+                         child: Column(
+                           children: [
+                             TextField(
+                               autofocus: true,
+                               controller: _email,
+                               decoration: InputDecoration(
+                                   hintText: 'Enter your email here'
+                               ),
+                             ),
+                             TextField(
+                               controller: _password,
+                               obscureText: true,
+                               enableSuggestions: false,
+                               autocorrect: false,
+                               decoration: InputDecoration(
+                                   hintText: 'Enter your password here'
+                               ),
+                             ),
+                             TextButton(
+                               onPressed: () async {
+                                 await Firebase.initializeApp(
+                                   options: DefaultFirebaseOptions.currentPlatform,
+                                 );
+                                 final email = _email.text;
+                                 final password = _password.text;
+                                 try {
+                                   final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                       email: email, password: password
+                                   );
+                                   print(userCredential);
+                                 } on FirebaseAuthException catch(e) {
 
-                                     if(e.code == 'user-not-found') {
-                                        print("user not found");
-                                     }
-                                     else {
-                                       print(e);
-                                     }
-                                  }
-                                },
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      backgroundColor: Colors.white
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                      )
+                                   if(e.code == 'user-not-found') {
+                                     print("user not found");
+                                   }
+                                   else {
+                                     print(e);
+                                   }
+                                 }
+                               },
+                               child: const Text(
+                                 'Login',
+                                 style: TextStyle(
+                                     color: Colors.blue,
+                                     backgroundColor: Colors.white
+                                 ),
+                               ),
+                             ),
+                             TextButton(
+                                 onPressed: () {
+                                   Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
+                                 },
+                                 child: const Text("Not register yet ? register here!")
+                             )
+                           ],
+                         )
+                     )
 
-                  );
+                 );
+               default: return Text("Loading...");
+             }
 
-                default: return Text("Loading...");
-              }
 
+           }
 
-            }
-
-        )
-
+       ),
     );
   }
 }

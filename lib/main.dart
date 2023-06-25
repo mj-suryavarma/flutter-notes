@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/screen/login.dart';
 import 'package:my_notes/screen/register.dart';
+import 'package:my_notes/screen/verify.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView(),
+      },
     );
   }
 
@@ -31,29 +36,25 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Welcome!'),
-        titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 25
-        ),
-        backgroundColor: Colors.blue ,
-      ),
       body:  FutureBuilder(
           future: Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform,
           ),
           builder: (context, snapshot) {
             switch(snapshot.connectionState) {
-              case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
-                if(user?.emailVerified ?? false) {
-                  print("Email is Verified");
-                } else {
-                  print("you need to verify your email first!");
-                }
-                return  Text("Done");
-              default: return Text("Loading...");
+         case ConnectionState.done:
+              final user = FirebaseAuth.instance.currentUser;
+              if(user != null) {
+                  if(user.emailVerified) {
+                     print("email is verified");
+                     return Text("email is verified");
+                  } else {
+                      return EmailVerifyView();
+                  }
+              }
+               else  return LoginView();
+
+            default: return Text("Loading...");
             }
 
 

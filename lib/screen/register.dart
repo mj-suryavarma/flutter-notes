@@ -47,56 +47,72 @@ class _RegisterViewState extends State<RegisterView>{
             builder: (context, snapshot) {
               switch(snapshot.connectionState) {
                 case ConnectionState.done:
-                  return  Container(
-                      margin: EdgeInsets.all((30)),
-                      child:  Center(
-                          child: Column(
-                            children: [
-                              TextField(
-                                autofocus: true,
-                                controller: _email,
-                                decoration: InputDecoration(
-                                    hintText: 'Enter your email here'
-                                ),
-                              ),
-                              TextField(
-                                controller: _password,
-                                obscureText: true,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                decoration: InputDecoration(
-                                    hintText: 'Enter your password here'
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await Firebase.initializeApp(
-                                    options: DefaultFirebaseOptions.currentPlatform,
-                                  );
-                                  final email = _email.text;
-                                  final password = _password.text;
-                                  try {
-                                    final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                        email: email, password: password
-                                    );
-                                    print(userCredential);
-                                  } on FirebaseAuthException catch(e) {
-                                    print(e);
-                                  }
-                                },
-                                child: const Text(
-                                  'Register',
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      backgroundColor: Colors.white
+                  return Scaffold(
+                      appBar: AppBar(
+                        title: const Text('Home'),
+                        titleTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                        ),
+                      ),
+                    body: Container(
+                        margin: EdgeInsets.all((30)),
+                        child:  Center(
+                            child: Column(
+                              children: [
+                                TextField(
+                                  autofocus: true,
+                                  controller: _email,
+                                  decoration: InputDecoration(
+                                      hintText: 'Enter your email here'
                                   ),
                                 ),
-                              )
-                            ],
-                          )
-                      )
+                                TextField(
+                                  controller: _password,
+                                  obscureText: true,
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  decoration: InputDecoration(
+                                      hintText: 'Enter your password here'
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    await Firebase.initializeApp(
+                                      options: DefaultFirebaseOptions.currentPlatform,
+                                    );
+                                    final email = _email.text;
+                                    final password = _password.text;
+                                    try {
+                                      final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                          email: email, password: password
+                                      );
+                                      print(userCredential);
+                                    } on FirebaseAuthException catch(e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        backgroundColor: Colors.white
+                                    ),
+                                  ),
+                                ),
 
-                  );
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route) => false);
+                                    },
+                                    child: const Text("Already register ? login here!")
+                                )
+                              ],
+                            )
+                        )
+
+                    ),
+                  ); 
 
                 default: return Text("Loading...");
               }
