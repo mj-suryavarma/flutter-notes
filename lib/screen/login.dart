@@ -49,6 +49,7 @@ class _LoginViewState extends State<LoginView> {
            builder: (context, snapshot) {
              switch(snapshot.connectionState) {
                case ConnectionState.done:
+
                  return   Container(
                      margin: EdgeInsets.all((30)),
                      child:  Center(
@@ -111,7 +112,10 @@ class _LoginViewState extends State<LoginView> {
                      )
 
                  );
-               default: return Text("Loading...");
+
+                 return const Text("Done");
+              // default: return Text("Loading...");
+                default: return CircularProgressIndicator();
              }
 
 

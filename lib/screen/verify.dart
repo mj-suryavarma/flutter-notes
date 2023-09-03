@@ -11,7 +11,10 @@ class EmailVerifyView extends StatefulWidget {
 class _EmailVerifyViewState extends State<EmailVerifyView> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return  Container(
+        margin: EdgeInsets.all((30)),
+        child:  Center(
+        child: Column(
       children: [
         const Text("Please verify your email address:"),
         TextButton(
@@ -19,8 +22,16 @@ class _EmailVerifyViewState extends State<EmailVerifyView> {
               final user = FirebaseAuth.instance.currentUser;
               user?.sendEmailVerification();
             },
-            child: const Text("send email verification"))
+            child: const Text("send email verification")),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route) => false);
+            },
+            child: const Text("Go to login >>")
+        )
       ],
+        ),
+     )
     );
   }
 }

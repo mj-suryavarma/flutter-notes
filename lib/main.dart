@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
               if(user != null) {
                   if(user.emailVerified) {
                      print("email is verified");
-                     return Text("email is verified");
+                     return NotesView();
                   } else {
                       return EmailVerifyView();
                   }
@@ -60,6 +60,40 @@ class HomePage extends StatelessWidget {
 
           }
 
+      ),
+    );
+  }
+}
+
+enum MenuAction {
+  Logout
+}
+
+class NotesView extends StatefulWidget {
+  const NotesView({Key? key}) : super(key: key);
+
+  @override
+  State<NotesView> createState() => _NotesViewState();
+}
+
+class _NotesViewState extends State<NotesView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Welcome!, Main Ui"),
+        backgroundColor: Colors.lightBlue,
+        actions: [
+            PopupMenuButton<MenuAction>(onSelected: (value) => {},
+            itemBuilder: (context) {
+              return const [
+              PopupMenuItem<MenuAction>(
+                value: MenuAction.Logout,
+                child: Text("Log out"),
+                )
+              ];
+          },)
+        ],
       ),
     );
   }
