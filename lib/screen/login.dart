@@ -7,6 +7,8 @@ import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'dart:developer' as devtools show log;
 
+import 'package:my_notes/utilities/dialog-service.dart';
+
 class LoginView extends StatefulWidget {
 
   const LoginView({Key? key}) : super(key: key);
@@ -88,16 +90,27 @@ class _LoginViewState extends State<LoginView> {
                                    Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
                                  } on FirebaseAuthException catch(e) {
 
-                                   if(e.code == 'user-not-found') {
+                                   if(e.message!.contains("user-not-found")) {
                                      devtools.log("User not found");
+                                    await showErrorDialog(context, "User Not Found");
+                                   } else if(e.message!.contains("invalid-email")) {
+                                     devtools.log("Invalid Email");
+                                     await showErrorDialog(context, "Invalid Email");
+                                   }
+                                   else if(e.message!.contains("wrong-password")) {
+                                     devtools.log("Wrong Credentials");
+                                     await showErrorDialog(context, "Wrong Credentials");
                                    }
                                    else {
-                                     devtools.log(e.message.toString());
+                                     devtools.log(e.toString());
+                                     await showErrorDialog(context, "Error ${e.message}");
                                    }
+                                 } catch(e) {
+                                   await showErrorDialog(context, e.toString());
                                  }
                                },
                                child: const Text(
-                                 loginRoute,
+                                 "Login",
                                  style: TextStyle(
                                      color: Colors.blue,
                                      backgroundColor: Colors.white
@@ -127,4 +140,5 @@ class _LoginViewState extends State<LoginView> {
        ),
     );
   }
+
 }
