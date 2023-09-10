@@ -3,6 +3,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'dart:developer' as devtools show log;
 
@@ -84,7 +85,7 @@ class _LoginViewState extends State<LoginView> {
                                        email: email, password: password
                                    );
                                    devtools.log(userCredential.toString());
-                                   Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
+                                   Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
                                  } on FirebaseAuthException catch(e) {
 
                                    if(e.code == 'user-not-found') {
@@ -96,7 +97,7 @@ class _LoginViewState extends State<LoginView> {
                                  }
                                },
                                child: const Text(
-                                 'Login',
+                                 loginRoute,
                                  style: TextStyle(
                                      color: Colors.blue,
                                      backgroundColor: Colors.white
@@ -105,7 +106,7 @@ class _LoginViewState extends State<LoginView> {
                              ),
                              TextButton(
                                  onPressed: () {
-                                   Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
+                                   Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
                                  },
                                  child: const Text("Not register yet ? register here!")
                              )
