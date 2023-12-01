@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/service/auth/auth-execption.dart';
+import 'package:my_notes/service/auth/auth_service.dart';
 import 'dart:developer' as devtools show log;
 
 import 'package:my_notes/utilities/dialog-service.dart';
@@ -78,17 +79,13 @@ class _LoginViewState extends State<LoginView> {
                              ),
                              TextButton(
                                onPressed: () async {
-                                 await Firebase.initializeApp(
-                                   options: DefaultFirebaseOptions.currentPlatform,
-                                 );
+                                 await AuthService.firebase().initialize();
                                  final email = _email.text;
                                  final password = _password.text;
                                  try {
-                                   final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                                       email: email, password: password
-                                   );
-                                   final user = FirebaseAuth.instance.currentUser;
-                                   if(user?.emailVerified ?? false) {
+                                   final userCredential = await AuthService.firebase().login(email: email, password: password);
+                                   final user = AuthService.firebase().currentUser;
+                                   if(user?.isEmailVerified ?? false) {
                                    // email is verified
                                     Navigator.of(context).pushNamedAndRemoveUntil(
                                         notesRoute,
@@ -104,25 +101,17 @@ class _LoginViewState extends State<LoginView> {
                                    devtools.log(userCredential.toString());
                                    Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
                                  }
-                                 on FirebaseAuthException catch(e) {
-
-                                   if(e.message!.contains("user-not-found")) {
-                                     devtools.log("User not found");
-                                    throw UserNotFoundException();
-                                   } else if(e.message!.contains("invalid-email")) {
-                                     devtools.log("Invalid Email");
-                                    throw InvalidEmailAuthException();
-                                   }
-                                   else if(e.message!.contains("wrong-password")) {
-                                     devtools.log("Wrong Credentials");
-                                    throw WrongPasswordException();
-                                   }
-                                   else {
-                                     devtools.log(e.toString());
-                                     throw GenericAuthException();
-                                   }
-                                 } catch(e) {
-                                   throw GenericAuthException();
+                                  on UserNotFoundException {
+                                    await showErrorDialog(context, "User Not Found ");
+                                  }
+                                  on WrongPasswordException {
+                                    await showErrorDialog(context, "Wrong Credentials");
+                                  }
+                                  on GenericAuthException {
+                                    await showErrorDialog(context, "Authentication Error");
+                                  }
+                                  catch(e) {
+                                    await showErrorDialog(context, "Authentication Error");
                                  }
                                },
                                child: const Text(

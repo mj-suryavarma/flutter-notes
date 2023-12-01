@@ -9,6 +9,8 @@ import 'package:my_notes/screen/register.dart';
 import 'package:my_notes/screen/verify.dart';
 import 'dart:developer' as devtool show log;
 
+import 'package:my_notes/service/auth/auth_service.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  MaterialApp(
-      title: 'Flutter Demo',
+      title: 'MJ Notes App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -42,15 +44,13 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body:  FutureBuilder(
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
+          future: AuthService.firebase().initialize(),
           builder: (context, snapshot) {
             switch(snapshot.connectionState) {
          case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
+              final user = AuthService.firebase().currentUser;
               if(user != null) {
-                  if(user.emailVerified) {
+                  if(user.isEmailVerified) {
                      devtool.log("Email is Verified");
                      return NotesView();
                   } else {

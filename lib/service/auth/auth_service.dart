@@ -20,7 +20,7 @@ class AuthService implements AuthProvider {
 
 
   @override
-  AuthProvider? get currentUser => throw UnimplementedError();
+  AuthUser? get currentUser => throw UnimplementedError();
 
   @override
   Future<void> logOut() => provider.logOut();
