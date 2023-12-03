@@ -61,8 +61,6 @@ class HomePage extends StatelessWidget {
 
             default: return Text("Loading...");
             }
-
-
           }
 
       ),

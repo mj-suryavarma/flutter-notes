@@ -1,10 +1,6 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:my_notes/service/auth/auth_provider.dart';
-import 'package:my_notes/service/auth/auth_service.dart';
 import 'package:my_notes/service/auth/auth_user.dart';
 import 'package:my_notes/service/auth/firebase_auth_provider.dart';
-
-import '../../firebase_options.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
@@ -20,7 +16,7 @@ class AuthService implements AuthProvider {
 
 
   @override
-  AuthUser? get currentUser => throw UnimplementedError();
+  AuthUser? get currentUser => provider.currentUser;
 
   @override
   Future<void> logOut() => provider.logOut();
