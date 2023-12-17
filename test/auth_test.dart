@@ -1,6 +1,7 @@
 import 'package:my_notes/service/auth/auth-execption.dart';
 import 'package:my_notes/service/auth/auth_provider.dart';
 import 'package:my_notes/service/auth/auth_user.dart';
+import 'package:path/path.dart';
 import 'package:test/test.dart';
 
  void main() {
@@ -96,7 +97,7 @@ import 'package:test/test.dart';
    if(!isInitialized) throw NotInitializedException();
    if(email == "dj@gamil.com") throw UserNotFoundException();
    if(password == "dj1234") throw WrongPasswordException();
-   const user = AuthUser(isEmailVerified: false);
+   final user = AuthUser(isEmailVerified: false, email: email);
    _user = user;
    return Future.value(user);
   }
@@ -105,7 +106,7 @@ import 'package:test/test.dart';
   Future<void> sendEmailVerification() async {
    if(!isInitialized) throw NotInitializedException();
    if(_user == null) throw UserNotFoundException();
-   const newUser = AuthUser(isEmailVerified: true);
+   final newUser = AuthUser(isEmailVerified: true, email: _user?.email);
    _user = newUser;
   }
 
