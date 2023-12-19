@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
-import 'package:my_notes/service/crud/notes_service.dart';
-import '../constant/routes.dart';
-import '../enums/menu_action.dart';
+import '../../constant/routes.dart';
+import '../../enums/menu_action.dart';
 import 'dart:developer' as devtool show log;
+import '../../service/crud/notes_service.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -36,6 +36,12 @@ class _NotesViewState extends State<NotesView> {
         title: Text("Welcome!, Main Ui"),
         backgroundColor: Colors.lightBlue,
         actions: [
+          IconButton(onPressed: () {
+            // Navigator.of(context).pushNamed(newNoteRoute);
+            Navigator.of(context).push;
+          },
+            icon: const Icon(Icons.add),
+          ),
           PopupMenuButton<MenuAction>(onSelected: (value) async {
             switch(value) {
               case MenuAction.logout:

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/screen/login.dart';
-import 'package:my_notes/screen/notes_view.dart';
+import 'package:my_notes/screen/note/notes_view.dart';
 import 'package:my_notes/screen/register.dart';
 import 'package:my_notes/screen/verify.dart';
 import 'dart:developer' as devtool show log;
