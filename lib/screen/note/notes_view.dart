@@ -37,8 +37,7 @@ class _NotesViewState extends State<NotesView> {
         backgroundColor: Colors.lightBlue,
         actions: [
           IconButton(onPressed: () {
-            // Navigator.of(context).pushNamed(newNoteRoute);
-            Navigator.of(context).push;
+             Navigator.of(context).pushNamed(newNoteRoute);
           },
             icon: const Icon(Icons.add),
           ),
