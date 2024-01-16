@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_notes/screen/note/notes_list_view.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 import '../../constant/routes.dart';
 import '../../enums/menu_action.dart';
@@ -69,33 +70,25 @@ class _NotesViewState extends State<NotesView> {
               return StreamBuilder(
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
+                    print("snapshot data is here $snapshot here is snapshot.connectionState ${snapshot.connectionState}");
                      switch(snapshot.connectionState) {
                        case ConnectionState.waiting:
                          return const Text("Waiting for all notes");
-                       case ConnectionState.done:
+                       case ConnectionState.done || ConnectionState.values || ConnectionState.active:
                          if(snapshot.hasData) {
                            final allNotes = snapshot.data as List<DatabaseNotes>;
                            print(allNotes);
                            devtool.log(allNotes.toString());
-                           return ListView.builder(
-                               itemCount: allNotes.length,
-                               itemBuilder: (context, index) {
-                                 final note = allNotes[index];
-
-                                 return ListTile(
-                                   title: Text(
-                                      note.text,
-                                      maxLines: 1,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis,
-                                   )
-                                 );
-                               });
+                           return NotesListView(
+                             notes: allNotes,
+                             onDeleteNote: (note) async {
+                               await _notesService.deleteNote(id: note.id);
+                           },);
                          } else {
                            return const CircularProgressIndicator();
                          }
                        default:
-                         return const CircularProgressIndicator();
+                         return Text("Here is Default Text");
                      }
                   });
             default:

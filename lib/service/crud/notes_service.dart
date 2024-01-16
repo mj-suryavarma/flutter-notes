@@ -125,7 +125,7 @@ class NotesService {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
 
-    //make sure owner exist in db
+    //make sure owner exists in db
     final dbUser = await getUser(email: owner.email);
     if(dbUser != owner) {
       throw CouldNotFindUserException();
@@ -169,7 +169,7 @@ class NotesService {
                     whereArgs: [email.toLowerCase()]
                   );
     if(results.isNotEmpty) {
-        throw UserAlreadyExistException();
+        throw UserAlreadyExistsException();
     }
 
     final userId = await db.insert(userTable, {
@@ -217,10 +217,11 @@ class NotesService {
     try {
       final docsPath = await getApplicationDocumentsDirectory();
       final dbPath = join(docsPath.path, dbName);
+      print("db path here -----   $dbPath, here is docu name - $docsPath");
       final db = await openDatabase(dbPath);
       _db = db;
 
-            //  create user table
+            //  create user tables
             await db.execute(createUserTable);
             // create Notes table
             await db.execute(createNoteTable);
@@ -277,7 +278,7 @@ class DatabaseUser {
  }
 
 const dbName = "notes.db";
-const notesTable = "note";
+const notesTable = "notes";
 const userTable = "user";
 const idColumn = "id";
 const userIdColumn = "user_id";
@@ -286,13 +287,13 @@ const isSyncedWithCloudColumn = "is_synced_with_cloud";
 const emailColumn = "email";
 
 
-const createUserTable  =  ''' CREATE TABLE IF NOT EXIST "user" (
+const createUserTable  =  ''' CREATE TABLE IF NOT EXISTS "user" (
         "id"	INTEGER NOT NULL,
         "email"	TEXT NOT NULL UNIQUE,
         PRIMARY KEY("id" AUTOINCREMENT)
       );  ''';
 
-const createNoteTable = '''CREATE TABLE IF NOT EXIST "notes" (
+const createNoteTable = '''CREATE TABLE IF NOT EXISTS "notes" (
                   "id"	INTEGER NOT NULL,
                   "user_id"	INTEGER NOT NULL,
                   "text"	TEXT NOT NULL,

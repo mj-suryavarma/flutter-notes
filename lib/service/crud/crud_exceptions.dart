@@ -7,11 +7,11 @@ class DatabaseNotOpenException implements Exception {}
 
 class CouldNotDeleteUserException implements Exception {}
 
-class UserAlreadyExistException implements Exception {}
+class UserAlreadyExistsException implements Exception {}
 
 class CouldNotFindUserException implements Exception {}
 
-class CouldNotDeleteoteException implements Exception {}
+class CouldNotDeleteNoteException implements Exception {}
 
 class CouldNotFindNoteException implements Exception {}
 
