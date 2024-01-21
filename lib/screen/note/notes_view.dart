@@ -29,7 +29,7 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome!, Main Ui"),
+        title: const Text("Welcome!, Main Ui"),
         backgroundColor: Colors.lightBlue,
         actions: [
           IconButton(onPressed: () {
