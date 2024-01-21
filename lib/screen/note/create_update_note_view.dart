@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
+import 'package:my_notes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:my_notes/utilities/generics/getArgument.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../service/crud/notes_service.dart';
 import 'package:my_notes/service/crud/could/could_note.dart';
 import 'package:my_notes/service/crud/could/could_storage_exceptions.dart';
@@ -38,7 +40,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
    await _notesService.updateNote(
        documentId: note.documentId,
        text: text);
-   print("New Notes are updated --- note ; ${note}, text: ${text}");
  }
 
  void _setupTextControllerListener() async {
@@ -100,6 +101,19 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
        appBar:  AppBar(
          title: const Text("Create New Note"),
            backgroundColor: Colors.lightBlue,
+           actions: [
+             IconButton(
+                 onPressed: () async {
+                   final text = _textController.text;
+                   if(_note == null || text.isEmpty) {
+                     return showCannotShareEmptyNoteDialog(context);
+                   }
+                   else {
+                      Share.share(text);
+                   }
+                 },
+                 icon: const Icon(Icons.share_sharp))
+           ],
        ),
         body: FutureBuilder(
           future: createOrGetExistingNote(context),
