@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_notes/screen/note/notes_list_view.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
+import 'package:my_notes/service/crud/could/could_note.dart';
+import 'package:my_notes/service/crud/could/firebase_cloud_storage.dart';
 import '../../constant/routes.dart';
 import '../../enums/menu_action.dart';
 import 'dart:developer' as devtool show log;
@@ -13,15 +15,17 @@ class NotesView extends StatefulWidget {
   State<NotesView> createState() => _NotesViewState();
 }
 
+// DatabaseNotes  -- for local crud -- now have been replaced with CloudNote
+// NoteService -- for local crud -- now have been replaced with FirebaseCloudStorage
 class _NotesViewState extends State<NotesView> {
 
-  late final NotesService _notesService;
-  String get userEmail => AuthService.firebase().currentUser!.email ?? '';
+  late final FirebaseCloudStorage _notesService;
+  // String get userEmail => AuthService.firebase().currentUser!.email ?? ''; for local crud
+  String get userId => AuthService.firebase().currentUser!.id;
 
   @override
   void initState() {
-    _notesService = NotesService();
-    _notesService.open();
+    _notesService = FirebaseCloudStorage();
     super.initState();
   }
 
@@ -62,47 +66,81 @@ class _NotesViewState extends State<NotesView> {
             },)
         ],
       ),
-      body: FutureBuilder(
-        future: _notesService.getOrCreateUser(email: userEmail),
-        builder: (context, snapshot){
-          switch(snapshot.connectionState) {
-            case ConnectionState.done:
-              return StreamBuilder(
-                  stream: _notesService.allNotes,
-                  builder: (context, snapshot) {
-                    print("snapshot data is here $snapshot here is snapshot.connectionState ${snapshot.connectionState}");
-                     switch(snapshot.connectionState) {
-                       case ConnectionState.waiting:
-                         return const Text("Waiting for all notes");
-                       case ConnectionState.done || ConnectionState.values || ConnectionState.active:
-                         if(snapshot.hasData) {
-                           final allNotes = snapshot.data as List<DatabaseNotes>;
-                           print(allNotes);
-                           devtool.log(allNotes.toString());
-                           return NotesListView(
-                             notes: allNotes,
-                             onDeleteNote: (note) async {
-                               await _notesService.deleteNote(id: note.id);
-                            },
-                            onTap: (note) {
-                              Navigator.of(context).pushNamed(
-                                createOrUpdateNoteRoute,
-                                arguments: note
-                              );
-                            },
-                           );
-                         } else {
-                           return const CircularProgressIndicator();
-                         }
-                       default:
-                         return Text("Here is Default Text");
-                     }
-                  });
-            default:
-             return const CircularProgressIndicator();
-          }
-        },
-      ),
+      body: StreamBuilder(
+          stream: _notesService.getAllNotes(ownerUserId: userId),
+          builder: (context, snapshot) {
+            print("snapshot data is here $snapshot here is snapshot.connectionState ${snapshot.connectionState}");
+            switch(snapshot.connectionState) {
+              case ConnectionState.waiting:
+                return const Text("Waiting for all notes");
+              case ConnectionState.done || ConnectionState.values || ConnectionState.active:
+                if(snapshot.hasData) {
+                  //DatabaseNotes return type for local crud
+                  final allNotes = snapshot.data as Iterable<CloudNote>;
+                  print(allNotes);
+                  devtool.log(allNotes.toString());
+                  return NotesListView(
+                    notes: allNotes,
+                    onDeleteNote: (note) async {
+                      await _notesService.deleteNote(documentId: note.documentId);
+                    },
+                    onTap: (note) {
+                      Navigator.of(context).pushNamed(
+                          createOrUpdateNoteRoute,
+                          arguments: note
+                      );
+                    },
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              default:
+                return Text("Here is Default Text");
+            }
+          }),
+      // return this for local crud
+      // body: FutureBuilder(
+      //   future: _notesService.getOrCreateUser(email: userEmail),
+      //   builder: (context, snapshot){
+      //     switch(snapshot.connectionState) {
+      //       case ConnectionState.done:
+      //         return StreamBuilder(
+      //             stream: _notesService.allNotes,
+      //             builder: (context, snapshot) {
+      //               print("snapshot data is here $snapshot here is snapshot.connectionState ${snapshot.connectionState}");
+      //                switch(snapshot.connectionState) {
+      //                  case ConnectionState.waiting:
+      //                    return const Text("Waiting for all notes");
+      //                  case ConnectionState.done || ConnectionState.values || ConnectionState.active:
+      //                    if(snapshot.hasData) {
+      //                      //DatabaseNotes return type for local crud
+      //                      final allNotes = snapshot.data as Iterable<CloudNote>;
+      //                      print(allNotes);
+      //                      devtool.log(allNotes.toString());
+      //                      return NotesListView(
+      //                        notes: allNotes,
+      //                        onDeleteNote: (note) async {
+      //                          await _notesService.deleteNote(id: note.id);
+      //                       },
+      //                       onTap: (note) {
+      //                         Navigator.of(context).pushNamed(
+      //                           createOrUpdateNoteRoute,
+      //                           arguments: note
+      //                         );
+      //                       },
+      //                      );
+      //                    } else {
+      //                      return const CircularProgressIndicator();
+      //                    }
+      //                  default:
+      //                    return Text("Here is Default Text");
+      //                }
+      //             });
+      //       default:
+      //        return const CircularProgressIndicator();
+      //     }
+      //   },
+      // ),
     );
   }
 }
