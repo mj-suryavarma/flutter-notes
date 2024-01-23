@@ -11,7 +11,7 @@ import 'package:my_notes/screen/note/notes_view.dart';
 import 'package:my_notes/screen/register.dart';
 import 'package:my_notes/screen/verify.dart';
 import 'dart:developer' as devtool show log;
-
+import 'package:bloc/src/bloc.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 
 void main() {
@@ -73,6 +73,14 @@ class MyApp extends StatelessWidget {
 // }
 
 class HomePage extends StatefulWidget {
+
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   late final TextEditingController _controller;
 
   @override
@@ -86,14 +94,6 @@ class HomePage extends StatefulWidget {
     _controller.dispose();
     super.dispose();
   }
-
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -105,14 +105,13 @@ class _HomePageState extends State<HomePage> {
             _controller.clear();
           },
           builder: (context, state) {
-            final invalidValue =>
-            (state is CounterStateInvalidNumber) ? state.invalidValue : '';
+            final invalidValue = (state is CounterStateInvalidNumber) ? state.invalidValue : '';
             return Column(
               children: [
                 Text('Current value => ${state.value}'),
                 Visibility(
-                  child: Text('Invalid input $invalidValue'),
                   visible: state is CounterStateInvalidNumber,
+                  child: Text('Invalid input $invalidValue'),
                 ),
                 TextField(
                   controller: _controller,
@@ -125,13 +124,17 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          context.read<CounterBloc>().add(DecrementEvent(_controller.text));
+                          context
+                              .read<CounterBloc>()
+                              .add(DecrementEvent(_controller.text));
                         },
                         child: const Text('-')
                     ),
                     TextButton(
                       onPressed: () {
-                        context.read<CounterBloc>().add(IncrementEvent(_controller.text));
+                        context
+                            .read<CounterBloc>()
+                            .add(IncrementEvent(_controller.text));
                       },
                       child: const Text('+'),
                     )
@@ -153,13 +156,14 @@ abstract class CounterState {
 }
 
 class CounterStateValid extends CounterState {
-   const CounterStateValid(String value): super(value);
+   const CounterStateValid(int value): super(value);
 }
 
 class CounterStateInvalidNumber extends CounterState {
+  final String invalidValue;
   const CounterStateInvalidNumber({
     required this.invalidValue,
-    requried this.previousValue,
+    required int previousValue,
   }): super(previousValue);
 }
 
@@ -169,49 +173,33 @@ abstract class CounterEvent {
 }
 
 class IncrementEvent extends CounterEvent {
-  const IncrementEvent(String value): super(this.value);
+  const IncrementEvent(super.value);
 }
 
 class DecrementEvent extends CounterEvent {
-  const DecrementEvent(String value): super(this.value)
+  const DecrementEvent(super.value);
 }
 
 class CounterBloc extends Bloc<CounterEvent, CounterState> {
-  CounterBloc(): super(const CounterStateValid(0)){
-    on<IncrementEvent>({event, emit}) {
+  CounterBloc(): super(const CounterStateValid(0)) {
+    on<IncrementEvent>((event, emit) {
       final integer = int.tryParse(event.value);
       if(integer == null) {
         emit(
           CounterStateInvalidNumber(
               invalidValue: event.value,
-              previousValue: state.value,
-          )
+              previousValue: state.value)
         );
-      }
-      else {
+      } else {
         emit(
-          CounterStateValid(state.value + integer)
+          CounterStateValid(state.value + integer),
         );
       }
-    }
+    });
 
-    on<DecrementEvent>({event, emit}) {
-      final integer = int.tryParse(event.value);
-      if(integer == null) {
-        emit(
-            CounterStateInvalidNumber(
-              invalidValue: event.value,
-              previousValue: state.value,
-            )
-        );
-      }
-      else {
-        emit(
-            CounterStateValid(state.value - integer)
-        );
-      }
-    }
+    on<DecrementEvent>((event, emit) {
 
+    });
   }
 
 }
