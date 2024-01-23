@@ -6,7 +6,7 @@ Future<void> showCannotShareEmptyNoteDialog(BuildContext context) {
      return showGenericDialog(
        context: context,
        title: "Sharing",
-       content: "Cannot Share Empty Dialog",
+       content: "Cannot Share Empty Note",
        optionBuilder: () => {
        "Okay": null
      },);
