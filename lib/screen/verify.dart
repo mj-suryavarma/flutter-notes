@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
+import 'package:my_notes/service/bloc/auth_bloc.dart';
+import 'package:my_notes/service/bloc/auth_event.dart';
 
 class EmailVerifyView extends StatefulWidget {
   const EmailVerifyView({Key? key}): super(key: key);
@@ -31,18 +34,23 @@ class _EmailVerifyViewState extends State<EmailVerifyView> {
                   const Text("Please verify your email address:"),
                   TextButton(
                       onPressed: () async {
-                        await AuthService.firebase().sendEmailVerification();
+                        //with bloc
+                         context.read<AuthBloc>().add(
+                           const AuthEventSendEmailVerification(),
+                         );
+                        //without bloc
+                        // await AuthService.firebase().sendEmailVerification();
                       },
                       child: const Text("send email verification")),
-                  TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route) => false);
-                      },
-                      child: const Text("Go to login >>")
-                  ),
+
                   TextButton(onPressed: () async {
-                    await AuthService.firebase().logOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
+                    //  with bloc
+                    context.read<AuthBloc>().add(
+                        const AuthEventLogout(),
+                    );
+                    // without bloc
+                    // await AuthService.firebase().logOut();
+                    // Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
                   }, child: const Text("Restart"))
                 ],
               ),
