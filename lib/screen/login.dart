@@ -12,8 +12,9 @@ import 'dart:developer' as devtools show log;
 import 'package:my_notes/utilities/dialogs/error_dialog.dart';
 import 'package:my_notes/utilities/dialogs/loading_dialog.dart';
 
+
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -40,7 +41,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
            final closeDialog = _closeDialogHandle;

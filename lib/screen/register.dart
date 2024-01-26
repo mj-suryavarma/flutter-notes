@@ -39,7 +39,7 @@ class _RegisterViewState extends State<RegisterView>{
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
       if(state is AuthStateRegistering) {
          if(state.exception is WeakPasswordAuthException) {

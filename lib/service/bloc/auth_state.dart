@@ -29,7 +29,7 @@ class AuthStateNeedVerification extends AuthState {
    const AuthStateNeedVerification();
 }
 
-class AuthStateLoggedOut extends AuthState  with EquatableMixin {
+class AuthStateLoggedOut extends AuthState with EquatableMixin {
    final Exception? exception;
    final bool isLoading;
    const AuthStateLoggedOut({ required this.exception, required this.isLoading });

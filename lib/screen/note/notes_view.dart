@@ -56,10 +56,10 @@ class _NotesViewState extends State<NotesView> {
                    );
                    // without bloc
                   // await AuthService.firebase().logOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      loginRoute,
-                          (_) => false
-                  );
+                  // Navigator.of(context).pushNamedAndRemoveUntil(
+                  //     loginRoute,
+                  //         (_) => false
+                  // );
                 }
                 break;
             }

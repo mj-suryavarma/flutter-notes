@@ -23,6 +23,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       });
 
+      on<AuthEventShouldRegister>((event, emit) async {
+       try{
+        } on Exception catch(e) {
+          emit(AuthStateRegistering(e));
+        }
+      });
+
      // initialize
      on<AuthEventInitialize>((event, emit) async {
        await provider.initialize();
@@ -40,7 +47,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
      });
 
      on<AuthEventLogin>((event, emit) async {
-       emit(const AuthStateLoggedOut(exception: null, isLoading: true));
+       await Future.delayed(const Duration(seconds: 3));
        try {
          final email = event.email;
          final password = event.password;
