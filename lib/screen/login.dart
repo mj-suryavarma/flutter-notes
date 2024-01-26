@@ -9,6 +9,7 @@ import 'package:my_notes/service/auth/auth-execption.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 import 'package:my_notes/service/bloc/auth_bloc.dart';
 import 'package:my_notes/service/bloc/auth_event.dart';
+import 'package:my_notes/service/bloc/auth_state.dart';
 import 'dart:developer' as devtools show log;
 import 'package:my_notes/utilities/dialogs/error_dialog.dart';
 
@@ -59,14 +60,14 @@ class _LoginViewState extends State<LoginView> {
                case ConnectionState.done:
 
                  return   Container(
-                     margin: EdgeInsets.all((30)),
+                     margin: const EdgeInsets.all((30)),
                      child:  Center(
                          child: Column(
                            children: [
                              TextField(
                                autofocus: true,
                                controller: _email,
-                               decoration: InputDecoration(
+                               decoration: const InputDecoration(
                                    hintText: 'Enter your email here'
                                ),
                              ),
@@ -75,24 +76,35 @@ class _LoginViewState extends State<LoginView> {
                                obscureText: true,
                                enableSuggestions: false,
                                autocorrect: false,
-                               decoration: InputDecoration(
+                               decoration: const InputDecoration(
                                    hintText: 'Enter your password here'
                                ),
                              ),
-                             TextButton(
+                             BlocListener(listener: (context, state) async {
+                               if(state is AuthStateLoggedOut) {
+                                 if(state is UserNotFoundException) {
+                                    await showErrorDialog(context, "User Not Found ");
+                                 } else if(state is WrongPasswordException) {
+                                    await showErrorDialog(context, "Wrong Credentials");
+                                 } else if(state is GenericAuthException) {
+                                    await showErrorDialog(context, "Authentication Error Occurred");
+                                 }
+                               }
+                             },
+                             child:  TextButton(
                                onPressed: () async {
                                  await AuthService.firebase().initialize();
                                  final email = _email.text;
                                  final password = _password.text;
-                                 try {
                                    //with bloc
-                                    context.read<AuthBloc>().add(AuthEventLogin(
-                                          email,
-                                          password
-                                      ),
-                                    );
+                                   context.read<AuthBloc>().add(AuthEventLogin(
+                                       email,
+                                       password
+                                   ),
+                                   );
 
-                                   // without bloc
+                                   // without bloc -- for leaning purpose
+                                 // try {
                                    // final userCredential = await AuthService.firebase().login(email: email, password: password);
                                    // final user = AuthService.firebase().currentUser;
                                    // if(user?.isEmailVerified ?? false) {
@@ -110,19 +122,19 @@ class _LoginViewState extends State<LoginView> {
                                    // }
                                    // devtools.log(userCredential.toString());
                                    // Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
-                                 }
-                                  on UserNotFoundException {
-                                    await showErrorDialog(context, "User Not Found ");
-                                  }
-                                  on WrongPasswordException {
-                                    await showErrorDialog(context, "Wrong Credentials");
-                                  }
-                                  on GenericAuthException {
-                                    await showErrorDialog(context, "Authentication Error");
-                                  }
-                                  catch(e) {
-                                    await showErrorDialog(context, "Authentication Error");
-                                 }
+                                 // }
+                                 // on UserNotFoundException {
+                                 //   await showErrorDialog(context, "User Not Found ");
+                                 // }
+                                 // on WrongPasswordException {
+                                 //   await showErrorDialog(context, "Wrong Credentials");
+                                 // }
+                                 // on GenericAuthException {
+                                 //   await showErrorDialog(context, "Authentication Error");
+                                 // }
+                                 // catch(e) {
+                                 //   await showErrorDialog(context, "Authentication Error");
+                                 // }
                                },
                                child: const Text(
                                  "Login",
@@ -131,7 +143,8 @@ class _LoginViewState extends State<LoginView> {
                                      backgroundColor: Colors.white
                                  ),
                                ),
-                             ),
+                             ),),
+
                              TextButton(
                                  onPressed: () {
                                    Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
