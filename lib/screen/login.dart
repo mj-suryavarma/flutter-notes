@@ -2,10 +2,13 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/service/auth/auth-execption.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
+import 'package:my_notes/service/bloc/auth_bloc.dart';
+import 'package:my_notes/service/bloc/auth_event.dart';
 import 'dart:developer' as devtools show log;
 import 'package:my_notes/utilities/dialogs/error_dialog.dart';
 
@@ -82,23 +85,31 @@ class _LoginViewState extends State<LoginView> {
                                  final email = _email.text;
                                  final password = _password.text;
                                  try {
-                                   final userCredential = await AuthService.firebase().login(email: email, password: password);
-                                   final user = AuthService.firebase().currentUser;
-                                   if(user?.isEmailVerified ?? false) {
-                                   // email is verified
-                                    Navigator.of(context).pushNamedAndRemoveUntil(
-                                        notesRoute,
-                                        (route) => false
+                                   //with bloc
+                                    context.read<AuthBloc>().add(AuthEventLogin(
+                                          email,
+                                          password
+                                      ),
                                     );
-                                   } else {
-                                   //  email is not verifed
-                                     Navigator.of(context).pushNamedAndRemoveUntil(
-                                         verifyEmailRoute,
-                                             (route) => false
-                                     );
-                                   }
-                                   devtools.log(userCredential.toString());
-                                   Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
+
+                                   // without bloc
+                                   // final userCredential = await AuthService.firebase().login(email: email, password: password);
+                                   // final user = AuthService.firebase().currentUser;
+                                   // if(user?.isEmailVerified ?? false) {
+                                   // // email is verified
+                                   //  Navigator.of(context).pushNamedAndRemoveUntil(
+                                   //      notesRoute,
+                                   //      (route) => false
+                                   //  );
+                                   // } else {
+                                   // //  email is not verifed
+                                   //   Navigator.of(context).pushNamedAndRemoveUntil(
+                                   //       verifyEmailRoute,
+                                   //           (route) => false
+                                   //   );
+                                   // }
+                                   // devtools.log(userCredential.toString());
+                                   // Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
                                  }
                                   on UserNotFoundException {
                                     await showErrorDialog(context, "User Not Found ");
@@ -135,7 +146,7 @@ class _LoginViewState extends State<LoginView> {
 
                  return const Text("Done");
               // default: return Text("Loading...");
-                default: return CircularProgressIndicator();
+                default: return const CircularProgressIndicator();
              }
 
 
