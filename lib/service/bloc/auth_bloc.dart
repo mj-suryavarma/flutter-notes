@@ -44,7 +44,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
          emit(const AuthStateLoggedOut(
            exception: null,
            isLoading: false,
-           loadingText: 'Please Wait while i log you in',
          ));
        } else if(!user.isEmailVerified) {
          emit(const AuthStateNeedVerification(isLoading: false));
@@ -57,6 +56,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
      });
 
      on<AuthEventLogin>((event, emit) async {
+       emit(const AuthStateLoggedOut(
+           exception: null,
+           isLoading: true,
+           loadingText: 'Please wait a moment'
+       ));
+       print(' heyyyyy bloc consumer loading state ${state.isLoading}');
        await Future.delayed(const Duration(seconds: 3));
        try {
          final email = event.email;
@@ -66,10 +71,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               password: password
           );
          if(!user.isEmailVerified) {
-           emit(const AuthStateLoggedOut(exception: null, isLoading: false));
+           emit(const AuthStateLoggedOut(
+               exception: null,
+               isLoading: false
+           ));
            emit(const AuthStateNeedVerification(isLoading: false));
          } else {
-           emit(const AuthStateLoggedOut(exception: null, isLoading: false));
+           emit(const AuthStateLoggedOut(
+               exception: null,
+               isLoading: false
+           ));
          }
           emit(AuthStateLoggedIn(
               user: user,

@@ -43,11 +43,11 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
-          if (state is UserNotFoundException) {
-            await showErrorDialog(context, "User Not Found ");
-          } else if (state is WrongPasswordException) {
-            await showErrorDialog(context, "Wrong Credentials");
-          } else if (state is GenericAuthException) {
+          if (state.exception is UserNotFoundException) {
+          await showErrorDialog(context, "User Not Found ");
+          } else if (state.exception is WrongPasswordException) {
+             await showErrorDialog(context, "Wrong Credentials");
+          } else if (state.exception is GenericAuthException) {
             await showErrorDialog(context, "Authentication Error Occurred");
           }
         }

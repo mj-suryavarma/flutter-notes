@@ -58,16 +58,13 @@ class HomePage extends StatelessWidget {
           if(state.isLoading) {
             LoadingScreen().show(
                 context: context,
-                text: state.loadingText ?? 'Please wait a moment!'
+                text: state.loadingText ?? 'Please wait a moment!',
             );
           } else {
             LoadingScreen().hide();
           }
         },
         builder: (context, state) {
-           if (kDebugMode) {
-             print("state $state");
-           }
           if(state is AuthStateLoggedIn) {
             return const NotesView();
           } else if(state is AuthStateNeedVerification) {
