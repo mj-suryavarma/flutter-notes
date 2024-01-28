@@ -36,7 +36,7 @@ class _NotesViewState extends State<NotesView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Welcome!, Main Ui"),
+        title: const Text("Welcome!"),
         backgroundColor: Colors.lightBlue,
         actions: [
           IconButton(onPressed: () {
@@ -85,20 +85,25 @@ class _NotesViewState extends State<NotesView> {
                 if(snapshot.hasData) {
                   //DatabaseNotes return type for local crud
                   final allNotes = snapshot.data as Iterable<CloudNote>;
-                  print(allNotes);
-                  devtool.log(allNotes.toString());
-                  return NotesListView(
-                    notes: allNotes,
-                    onDeleteNote: (note) async {
-                      await _notesService.deleteNote(documentId: note.documentId);
-                    },
-                    onTap: (note) {
-                      Navigator.of(context).pushNamed(
-                          createOrUpdateNoteRoute,
-                          arguments: note
-                      );
-                    },
-                  );
+                  if(allNotes.isEmpty) {
+                    return const Center(
+                      child:  Text('No data available'),
+                    );
+                  } else {
+                    return NotesListView(
+                      notes: allNotes,
+                      onDeleteNote: (note) async {
+                        await _notesService.deleteNote(documentId: note.documentId);
+                      },
+                      onTap: (note) {
+                        Navigator.of(context).pushNamed(
+                            createOrUpdateNoteRoute,
+                            arguments: note
+                        );
+                      },
+                    );
+                  }
+
                 } else {
                   return const CircularProgressIndicator();
                 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/helper/loading/loading_screen.dart';
+import 'package:my_notes/screen/forgot_password.dart';
 import 'package:my_notes/screen/login.dart';
 import 'package:my_notes/screen/note/create_update_note_view.dart';
 import 'package:my_notes/screen/note/notes_view.dart';
@@ -65,12 +66,15 @@ class HomePage extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          print('the current state value is $state');
           if(state is AuthStateLoggedIn) {
             return const NotesView();
           } else if(state is AuthStateNeedVerification) {
             return const EmailVerifyView();
           } else if(state is AuthStateLoggedOut) {
             return const LoginView();
+          } else if(state is AuthStateForgetPassword) {
+            return const ForgotPasswordView();
           } else if(state is AuthStateRegistering) {
             return const RegisterView();
           } else {

@@ -44,7 +44,7 @@ class _LoginViewState extends State<LoginView> {
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
           if (state.exception is UserNotFoundException) {
-          await showErrorDialog(context, "User Not Found ");
+          await showErrorDialog(context, "Cannot find a user");
           } else if (state.exception is WrongPasswordException) {
              await showErrorDialog(context, "Wrong Credentials");
           } else if (state.exception is GenericAuthException) {
@@ -70,6 +70,7 @@ class _LoginViewState extends State<LoginView> {
                       child: Center(
                           child: Column(
                         children: [
+                          const Text('Please log in to your account in order to interact with and create notes!'),
                           TextField(
                             autofocus: true,
                             controller: _email,
@@ -133,7 +134,14 @@ class _LoginViewState extends State<LoginView> {
                                   color: Colors.blue,
                                   backgroundColor: Colors.white),
                             ),
-                          ),
+                          ),  TextButton(
+                              onPressed: () {
+                                context.read<AuthBloc>().add(
+                                  const AuthEventForgetPassword(),
+                                );
+                              },
+                              child: const Text(
+                                  "I forgot my password")),
                           TextButton(
                               onPressed: () {
                                 // with bloc
