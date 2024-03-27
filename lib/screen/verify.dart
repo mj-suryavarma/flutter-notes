@@ -26,7 +26,7 @@ class _EmailVerifyViewState extends State<EmailVerifyView> {
         ),
         body: Container(
             margin: EdgeInsets.all((30)),
-            child:  Center(
+            child:  SingleChildScrollView(
               child: Column(
                 children: [
                   const Text("We've sent you an email verification. Please open it to verify your account"),

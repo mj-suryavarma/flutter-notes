@@ -24,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
       final email = event.email;
       if (email == null) {
-        return; //user just want to got forgot password screen
+        return; //user j  ust want to got forgot password screen
       }
 
       //  user want to actually send a forgot-password email

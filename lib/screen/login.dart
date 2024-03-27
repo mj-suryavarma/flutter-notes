@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_notes/constant/assert.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/service/auth/auth-execption.dart';
@@ -53,11 +54,6 @@ class _LoginViewState extends State<LoginView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Login'),
-          titleTextStyle: const TextStyle(color: Colors.white, fontSize: 25),
-          backgroundColor: Colors.blue,
-        ),
         body: FutureBuilder(
             future: Firebase.initializeApp(
               options: DefaultFirebaseOptions.currentPlatform,
@@ -65,12 +61,26 @@ class _LoginViewState extends State<LoginView> {
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.done:
-                  return Container(
-                      margin: const EdgeInsets.all((30)),
-                      child: Center(
+                  return Padding(
+                      padding: const EdgeInsets.all((30)),
+                      child: SingleChildScrollView(
                           child: Column(
                         children: [
-                          const Text('Please log in to your account in order to interact with and create notes!'),
+                          Image(
+                            image: AssetImage(Assets.mjNotes),
+                            height: 100,
+                            width: double.infinity,
+                          )
+                          ,
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                              style: TextStyle(
+                                color: Colors.black,
+
+                              ),
+                              'Please log in to your account in order to interact with and create notes!'),
                           TextField(
                             autofocus: true,
                             controller: _email,
@@ -85,7 +95,15 @@ class _LoginViewState extends State<LoginView> {
                             decoration: const InputDecoration(
                                 hintText: 'Enter your password here'),
                           ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           TextButton(
+                             style: TextButton.styleFrom(
+                               padding: const EdgeInsets.all(10),
+                               backgroundColor: Color(0xFF12C943),
+
+                             ),
                             onPressed: () async {
                               await AuthService.firebase().initialize();
                               final email = _email.text;
@@ -128,20 +146,40 @@ class _LoginViewState extends State<LoginView> {
                               //   await showErrorDialog(context, "Authentication Error");
                               // }
                             },
+
                             child: const Text(
-                              "Login",
+                               "Login",
                               style: TextStyle(
-                                  color: Colors.blue,
-                                  backgroundColor: Colors.white),
+                                  color: Colors.white,
+                                  backgroundColor: Color(0xFF12C943),
+                                  fontSize: 20,
+                                 fontFamily: 'cursive',
+                              ),
                             ),
-                          ),  TextButton(
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+
+                          TextButton(
+                            style: TextButton.styleFrom(
+
+                            ),
                               onPressed: () {
                                 context.read<AuthBloc>().add(
                                   const AuthEventForgetPassword(),
                                 );
                               },
                               child: const Text(
-                                  "I forgot my password")),
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                ),
+                                  "I forgot my password")
+
+                          ),
+                         const SizedBox(
+                            height: 15,
+                          ),
                           TextButton(
                               onPressed: () {
                                 // with bloc
@@ -153,6 +191,9 @@ class _LoginViewState extends State<LoginView> {
                                 //     registerRoute, (route) => false);
                               },
                               child: const Text(
+                                  style: TextStyle(
+                                color: Colors.blue,
+                              ),
                                   "Not register yet ? register here!"))
                         ],
                       )));
