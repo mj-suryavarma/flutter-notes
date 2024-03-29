@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_notes/constant/app_color.dart';
 import 'package:my_notes/service/bloc/auth_bloc.dart';
 import 'package:my_notes/service/bloc/auth_event.dart';
 import 'package:my_notes/service/bloc/auth_state.dart';
@@ -46,15 +47,27 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Forgot Password'),
-        ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const SizedBox(
+                height: 50,
+              ),
               const Text(
-                  'If you forgot password, simply enter you email, we will send link to email'),
+                "Forgot Password",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(appThemeColor)),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                  'If you forgot password, simply enter you email, we will send link to email',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    color: Colors.black54,
+                    fontFamily: 'cursive'
+                  ),
+              ),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
@@ -64,18 +77,35 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     hintText: 'Your email address...'
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
               TextButton(onPressed: () {
                   final email = _controller.text;
                   context
                       .read<AuthBloc>()
                       .add(AuthEventForgetPassword(email: email));
-              }, child: const Text('Send me to password reset link')
+              }, child:
+              const Text(
+                'Send me to password reset link',
+                style: TextStyle(
+                  color: Colors.blue,
+                ),
+              )
+              ),
+              const SizedBox(
+                height: 20,
               ),
               TextButton(onPressed: () {
                 context
                     .read<AuthBloc>()
                     .add(const AuthEventLogout());
-              }, child: const Text('Back to login page')
+              }, child: const Text(
+                  'Back to login page',
+                  style: TextStyle(
+                  color: Colors.blue,
+                  ),
+              )
               )
             ],
           ),

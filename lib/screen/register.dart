@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_notes/constant/app_color.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
@@ -53,11 +54,6 @@ class _RegisterViewState extends State<RegisterView> {
         }
       },
       child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Register'),
-            titleTextStyle: const TextStyle(color: Colors.white, fontSize: 25),
-            backgroundColor: Colors.blue,
-          ),
           body: FutureBuilder(
               future: Firebase.initializeApp(
                 options: DefaultFirebaseOptions.currentPlatform,
@@ -77,15 +73,33 @@ class _RegisterViewState extends State<RegisterView> {
                         padding: const EdgeInsets.all((20)),
                         child: SingleChildScrollView(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              const SizedBox(
+                                height: 50,
+                              ),
                               const Text(
-                                  'Enter your email and password to see your notes'),
+                                "Forgot Password",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(appThemeColor)),
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                  'Enter your email and password to see your notes',
+                                style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black54,
+                                fontFamily: 'cursive'
+                                ),
+                              ),
                               TextField(
                                 autofocus: true,
                                 controller: _email,
                                 decoration: const InputDecoration(
-                                    hintText: 'Enter your email here'),
+                                    hintText: 'Enter your email here',
+                                    hintStyle: TextStyle(
+                                      fontStyle: FontStyle.italic
+                                    ),
+                                ),
                               ),
                               TextField(
                                 controller: _password,
@@ -93,11 +107,18 @@ class _RegisterViewState extends State<RegisterView> {
                                 enableSuggestions: false,
                                 autocorrect: false,
                                 decoration: const InputDecoration(
-                                    hintText: 'Enter your password here'),
+                                    hintText: 'Enter your password here',
+                                    hintStyle: TextStyle(
+                                      fontStyle: FontStyle.italic
+                                  ),
+                                ),
                               ),
                               Center(
                                 child: Column(
                                   children: [
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
                                     TextButton(
                                       onPressed: () async {
                                         await Firebase.initializeApp(
@@ -142,6 +163,9 @@ class _RegisterViewState extends State<RegisterView> {
                                             backgroundColor: Colors.white),
                                       ),
                                     ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
                                     TextButton(
                                         onPressed: () {
                                           // with bloc
@@ -152,7 +176,11 @@ class _RegisterViewState extends State<RegisterView> {
                                           // Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (route) => false);
                                         },
                                         child: const Text(
-                                            "Already register ? login here!"))
+                                            "Already register ? login here!",
+                                          style: TextStyle(
+                                              color: Colors.blue,
+                                              backgroundColor: Colors.white),
+                                        ))
                                   ],
                                 ),
                               )

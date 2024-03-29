@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_notes/constant/app_color.dart';
 import 'package:my_notes/constant/assert.dart';
 import 'package:my_notes/constant/routes.dart';
 import 'package:my_notes/firebase_options.dart';
@@ -101,7 +102,7 @@ class _LoginViewState extends State<LoginView> {
                           TextButton(
                              style: TextButton.styleFrom(
                                padding: const EdgeInsets.all(10),
-                               backgroundColor: Color(0xFF12C943),
+                               backgroundColor: Color(appThemeColor),
 
                              ),
                             onPressed: () async {
@@ -151,7 +152,7 @@ class _LoginViewState extends State<LoginView> {
                                "Login",
                               style: TextStyle(
                                   color: Colors.white,
-                                  backgroundColor: Color(0xFF12C943),
+                                  backgroundColor: Color(appThemeColor),
                                   fontSize: 20,
                                  fontFamily: 'cursive',
                               ),
