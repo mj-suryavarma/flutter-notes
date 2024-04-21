@@ -79,7 +79,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 height: 50,
                               ),
                               const Text(
-                                "Forgot Password",
+                                "Let's Register Account",
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(appThemeColor)),
                               ),
                               const SizedBox(height: 20),

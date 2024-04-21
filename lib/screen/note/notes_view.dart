@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_notes/constant/assert.dart';
 import 'package:my_notes/screen/note/notes_list_view.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 import 'package:my_notes/service/bloc/auth_bloc.dart';
@@ -35,13 +36,20 @@ class _NotesViewState extends State<NotesView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white24,
       appBar: AppBar(
-        title: const Text("Welcome!"),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.white,
+        title: Image(
+          image: AssetImage(Assets.mjNotes),
+          height: 70,
+        ),
         actions: [
-          IconButton(onPressed: () {
+
+          IconButton(
+            onPressed: () {
              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
           },
+
             icon: const Icon(Icons.add),
           ),
           PopupMenuButton<MenuAction>(onSelected: (value) async {
@@ -87,7 +95,21 @@ class _NotesViewState extends State<NotesView> {
                   final allNotes = snapshot.data as Iterable<CloudNote>;
                   if(allNotes.isEmpty) {
                     return const Center(
-                      child:  Text('No data available'),
+                      child: Column(
+                      verticalDirection: VerticalDirection.down,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FractionallySizedBox(
+                         widthFactor: 0.5,
+                         child: Image(
+                            image: AssetImage('assets/icon/no_data.jpg'),
+                          ),
+                        ),
+                        Text("No data found"),
+                      ],
+                    )
+
                     );
                   } else {
                     return NotesListView(
