@@ -1,2 +1,3 @@
 const ownerUserFieldName = 'user_id';
-const textFieldName = 'text';
+const noteTitleName = 'note_title';
+const noteBodyName = 'note_body';

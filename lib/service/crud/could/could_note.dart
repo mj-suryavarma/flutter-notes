@@ -6,15 +6,18 @@ import 'package:my_notes/service/crud/could/could_storage_constants.dart';
 class CloudNote {
   final String documentId;
   final String ownerUserId;
-  final String text;
+  final String noteTitle;
+  final String noteBody;
   const CloudNote({
     required this.documentId,
     required this.ownerUserId,
-    required this.text
+    required this.noteTitle,
+    required this.noteBody,
   });
 
   CloudNote.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot):
         documentId = snapshot.id,
         ownerUserId = snapshot.data()[ownerUserFieldName],
-        text = snapshot.data()[textFieldName] as String;
+        noteTitle = snapshot.data()[noteTitleName] as String,
+        noteBody = snapshot.data()[noteBodyName] as String;
 }

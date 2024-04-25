@@ -36,7 +36,7 @@ class NotesListView extends StatelessWidget {
                 onTap(note);
               },
               title: Text(
-                note.text,
+                note.noteTitle,
                 softWrap: false,
 
               ),

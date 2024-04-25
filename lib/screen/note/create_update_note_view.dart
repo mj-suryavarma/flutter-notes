@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
@@ -21,12 +23,14 @@ class CreateUpdateNoteView extends StatefulWidget {
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FirebaseCloudStorage _notesService;
-  late final TextEditingController _textController;
+  late final TextEditingController _textTitleController;
+  late final TextEditingController _textBodyController;
 
   @override
   initState() {
     _notesService = FirebaseCloudStorage();
-    _textController = TextEditingController();
+    _textTitleController = TextEditingController();
+    _textBodyController = TextEditingController();
     super.initState();
   }
 
@@ -35,20 +39,23 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (note == null) {
       return;
     }
-    final text = _textController.text;
-    await _notesService.updateNote(documentId: note.documentId, text: text);
+    final noteTitle = _textTitleController.text;
+    final noteBody = _textBodyController.text;
+    await _notesService.updateNote(documentId: note.documentId, noteTitle: noteTitle, noteBody: noteBody);
   }
 
   void _setupTextControllerListener() async {
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
+    _textTitleController.removeListener(_textControllerListener);
+    _textTitleController.addListener(_textControllerListener);
+    _textBodyController.removeListener(_textControllerListener);
+    _textBodyController.addListener(_textControllerListener);
   }
 
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNotes = context.getArgument<CloudNote>();
     if (widgetNotes != null) {
       _note = widgetNotes;
-      _textController.text = widgetNotes.text;
+      _textTitleController.text = widgetNotes.noteTitle;
       return widgetNotes;
     }
 
@@ -68,16 +75,17 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   }
 
   void _deleteNoteIfTextIsEmpty() async {
-    if (_textController.text.isEmpty && _note != null) {
+    if (_textTitleController.text.isEmpty && _note != null) {
       await _notesService.deleteNote(documentId: _note!.documentId);
     }
   }
 
   void _saveNoteIfTextIsNotEmpty() async {
     final note = _note;
-    final text = _textController.text;
-    if (note != null && text.isNotEmpty) {
-      await _notesService.updateNote(documentId: note.documentId, text: text);
+    final textTitle = _textTitleController.text;
+    final textBody = _textTitleController.text;
+    if (note != null && textTitle.isNotEmpty) {
+      await _notesService.updateNote(documentId: note.documentId, noteTitle: textTitle, noteBody: textBody);
     }
   }
 
@@ -85,7 +93,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void dispose() {
     _deleteNoteIfTextIsEmpty();
     _saveNoteIfTextIsNotEmpty();
-    _textController.dispose();
+    _textTitleController.dispose();
     super.dispose();
   }
 
@@ -98,7 +106,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         actions: [
           IconButton(
               onPressed: () async {
-                final text = _textController.text;
+                final text = _textTitleController.text;
                 if (_note == null || text.isEmpty) {
                   return showCannotShareEmptyNoteDialog(context);
                 } else {
@@ -117,13 +125,25 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               _setupTextControllerListener();
               return Container(
                 margin: const EdgeInsets.all((15)),
-                child: TextField(
-                  controller: _textController,
+                child: Column(
+              children: [
+                TextField(
+                  controller: _textTitleController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: const InputDecoration(
-                      hintText: 'Start typing your text here...'),
+                      hintText: 'Title..'),
                 ),
+                TextField(
+                  controller: _textBodyController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 5,
+                  decoration: const InputDecoration(
+                    hintText: 'Note..'
+                  ),
+                )
+          ],
+          )
               );
 
             default:

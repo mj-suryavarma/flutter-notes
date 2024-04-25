@@ -76,7 +76,7 @@ class NotesService {
         await getNote(id: note.id);
 
         final updateCount = await db.update(notesTable, {
-          textColumn: text,
+          noteTitleColumn: text,
           isSyncedWithCloudColumn: 0
         }, where: 'id = ?', whereArgs: [note.id]);
 
@@ -148,16 +148,18 @@ class NotesService {
       throw CouldNotFindUserException();
     }
 
-    const text = "";
+    const noteTitle = "note_title";
+    const noteBody = "note_body";
 
   //  create new notes
     final noteId = await db.insert(notesTable, {
       userIdColumn: owner.id,
-      textColumn: text,
+      noteTitleColumn: noteTitle,
+      noteTitleColumn: noteBody,
       isSyncedWithCloudColumn: 1
     });
 
-    final note = DatabaseNotes(id: noteId, userId: owner.id, text: text, isSyncedWithCloud: true);
+    final note = DatabaseNotes(id: noteId, userId: owner.id, noteTitle: noteTitle, noteBody: noteBody, isSyncedWithCloud: true);
 
     _notes.add(note);
     _notesStreamController.add(_notes);
@@ -272,22 +274,25 @@ class DatabaseUser {
  class DatabaseNotes {
   final int id;
   final int userId;
-  final String text;
+  final String noteTitle;
+  final String noteBody;
   final bool isSyncedWithCloud;
 
    const DatabaseNotes({
     required this.id,
     required this.userId,
-    required this.text,
+    required this.noteTitle,
+    required this.noteBody,
     required this.isSyncedWithCloud,
     });
 
    DatabaseNotes.fromRow(Map<String, Object?> map) : id = map[idColumn] as int,
-                userId = map[userIdColumn] as int, text = map[textColumn] as String,
+                userId = map[userIdColumn] as int, noteTitle = map[noteTitleColumn] as String,
+                noteBody = map[noteBodyColumn] as String,
                 isSyncedWithCloud = (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
 
    @override
-   String toString()  => 'id = $id, userId = $userId, text $text, isSyncedWithCloud = $isSyncedWithCloud';
+   String toString()  => 'id = $id, userId = $userId, text $noteTitle, isSyncedWithCloud = $isSyncedWithCloud';
 
 
   @override
@@ -299,7 +304,8 @@ const notesTable = "notes";
 const userTable = "user";
 const idColumn = "id";
 const userIdColumn = "user_id";
-const textColumn = "text";
+const noteTitleColumn = "note_title";
+const noteBodyColumn = "note_body";
 const isSyncedWithCloudColumn = "is_synced_with_cloud";
 const emailColumn = "email";
 
@@ -313,7 +319,8 @@ const createUserTable  =  ''' CREATE TABLE IF NOT EXISTS "user" (
 const createNoteTable = '''CREATE TABLE IF NOT EXISTS "notes" (
                   "id"	INTEGER NOT NULL,
                   "user_id"	INTEGER NOT NULL,
-                  "text"	TEXT NOT NULL,
+                  "note_title"	TEXT NOT NULL,
+                  "note_body" TEXT NOT NULL
                   "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
                   FOREIGN KEY("user_id") REFERENCES "user",
                   PRIMARY KEY("id" AUTOINCREMENT)
