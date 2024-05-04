@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_notes/constant/app_color.dart';
 import 'package:my_notes/service/crud/could/could_note.dart';
 import 'package:my_notes/utilities/dialogs/delete_dialog.dart';
 
@@ -38,19 +39,50 @@ class NotesListView extends StatelessWidget {
               title: Text(
                 note.noteTitle,
                 softWrap: false,
-
+                style: const TextStyle(
+                  fontSize: 18
+                ),
               ),
-            trailing: IconButton(
-              alignment: Alignment.bottomLeft,
-               onPressed: () async {
-                 final shouldDelete = await showDeleteDialog(context);
-                 if(shouldDelete) {
-                   onDeleteNote(note);
-                 }
-               },
+            subtitle: Column(
+             mainAxisAlignment: MainAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               const SizedBox(
+                 height: 10,
+               )
+               ,Text(
+                   note.noteBody,
+                   softWrap: true,
+                   overflow: TextOverflow.ellipsis,
+                  ),
+               Text(
+                 note.createdDate,
+                 textAlign: TextAlign.start,
+               )
+                ]
+              ),
+            trailing: Column(
+              children: [
+                const SizedBox(
+                  height: 5,
+                ),
+                IconButton(
+                  alignment: Alignment.bottomRight,
+                  color: Colors.greenAccent,
+                  iconSize: 20,
+                  onPressed: () async {
+                    final shouldDelete = await showDeleteDialog(context);
+                    if(shouldDelete) {
+                      onDeleteNote(note);
+                    }
+                  },
+                  icon: const Icon(Icons.delete_rounded),
+                ) ,
+              ],
 
-               icon: const Icon(Icons.delete),
-            ) ,
+            )
+
+          
           );
         });
   }

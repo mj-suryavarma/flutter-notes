@@ -2,6 +2,7 @@ import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_notes/constant/assert.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 import 'package:my_notes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:my_notes/utilities/generics/getArgument.dart';
@@ -46,8 +47,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   void _setupTextControllerListener() async {
     _textTitleController.removeListener(_textControllerListener);
-    _textTitleController.addListener(_textControllerListener);
     _textBodyController.removeListener(_textControllerListener);
+    _textTitleController.addListener(_textControllerListener);
     _textBodyController.addListener(_textControllerListener);
   }
 
@@ -56,6 +57,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (widgetNotes != null) {
       _note = widgetNotes;
       _textTitleController.text = widgetNotes.noteTitle;
+      _textBodyController.text = widgetNotes.noteBody;
       return widgetNotes;
     }
 
@@ -83,8 +85,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfTextIsNotEmpty() async {
     final note = _note;
     final textTitle = _textTitleController.text;
-    final textBody = _textTitleController.text;
-    if (note != null && textTitle.isNotEmpty) {
+    final textBody = _textBodyController.text;
+    if (note != null && textTitle.isNotEmpty && textBody.isNotEmpty) {
       await _notesService.updateNote(documentId: note.documentId, noteTitle: textTitle, noteBody: textBody);
     }
   }
@@ -94,6 +96,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _deleteNoteIfTextIsEmpty();
     _saveNoteIfTextIsNotEmpty();
     _textTitleController.dispose();
+    _textBodyController.dispose();
     super.dispose();
   }
 
@@ -101,8 +104,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create New Note"),
-        backgroundColor: Colors.lightBlue,
+        automaticallyImplyLeading: false,
+        title: Image(
+          image: AssetImage(Assets.mjNotes),
+          height: 70,
+        ),
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
               onPressed: () async {
@@ -113,7 +120,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                   Share.share(text);
                 }
               },
-              icon: const Icon(Icons.share_sharp))
+              color: Colors.green,
+              icon: const Icon(Icons.share_sharp)),
+
+          IconButton(onPressed: () { },
+              color: Colors.green,
+              icon: const Icon(Icons.check_rounded))
         ],
       ),
       body: FutureBuilder(
@@ -132,14 +144,27 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: const InputDecoration(
-                      hintText: 'Title..'),
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.white,
+                      hintText: 'Write title here..'),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 TextField(
                   controller: _textBodyController,
                   keyboardType: TextInputType.multiline,
                   maxLines: 5,
                   decoration: const InputDecoration(
-                    hintText: 'Note..'
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          style: BorderStyle.none,
+                          color: Colors.white,
+                        ),
+                      ),
+
+                      fillColor: Colors.white,
+                    hintText: 'Write something ..'
                   ),
                 )
           ],
