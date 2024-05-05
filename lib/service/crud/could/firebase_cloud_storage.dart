@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:my_notes/service/crud/could/could_storage_constants.dart';
 import 'package:my_notes/service/crud/could/could_storage_exceptions.dart';
 
@@ -48,11 +49,15 @@ class FirebaseCloudStorage {
   }
 
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final dateNow = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-mm-yyyy');
+    final fomattedDate = formatter.format(dateNow);
+
     final document = await notes.add({
       ownerUserFieldName: ownerUserId,
       noteTitleName: '',
       noteBodyName: '',
-      noteCreatedDate: DateTime.timestamp().toString(),
+      noteCreatedDate: fomattedDate.toString(),
     });
     final fetchedNote = await document.get();
     return CloudNote(
@@ -60,7 +65,7 @@ class FirebaseCloudStorage {
         ownerUserId: ownerUserId,
         noteTitle: '',
         noteBody: '',
-        createdDate: DateTime.timestamp().toString(),
+        createdDate: fomattedDate,
     );
   }
 

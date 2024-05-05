@@ -18,8 +18,11 @@ class NotesListView extends StatelessWidget {
               required this.onTap,
                   }) : super(key: key);
 
+
+
   @override
   Widget build(BuildContext context) {
+
     return ListView.builder(
          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
         itemCount: notes.length,
