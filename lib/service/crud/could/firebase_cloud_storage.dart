@@ -50,7 +50,7 @@ class FirebaseCloudStorage {
 
   Future<CloudNote> createNewNote({required String ownerUserId}) async {
     final dateNow = DateTime.now();
-    final DateFormat formatter = DateFormat('dd-mm-yyyy');
+    final DateFormat formatter = DateFormat('dd/MM/yyyy hh:mm aaa');
     final fomattedDate = formatter.format(dateNow);
 
     final document = await notes.add({

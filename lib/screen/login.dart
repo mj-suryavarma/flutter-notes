@@ -153,7 +153,7 @@ class _LoginViewState extends State<LoginView> {
                               style: TextStyle(
                                   color: Colors.white,
                                   backgroundColor: Color(appThemeColor),
-                                  fontSize: 20,
+                                  fontSize: 15,
                                  fontFamily: 'cursive',
                               ),
                             ),

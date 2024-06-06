@@ -112,22 +112,28 @@ class _NotesViewState extends State<NotesView> {
 
                     );
                   } else {
-                    return NotesListView(
-                      notes: allNotes,
-                      onDeleteNote: (note) async {
-                        await _notesService.deleteNote(documentId: note.documentId);
-                      },
-                      onTap: (note) {
-                        Navigator.of(context).pushNamed(
-                            createOrUpdateNoteRoute,
-                            arguments: note
-                        );
-                      },
+                    return Container(
+                      margin: const EdgeInsets.fromLTRB(15, 20, 15, 20),
+                      child: NotesListView(
+                        notes: allNotes,
+                        onDeleteNote: (note) async {
+                          await _notesService.deleteNote(documentId: note.documentId);
+                        },
+                        onTap: (note) {
+                          Navigator.of(context).pushNamed(
+                              createOrUpdateNoteRoute,
+                              arguments: note
+                          );
+                        },
+                      ),
                     );
                   }
 
                 } else {
-                  return const CircularProgressIndicator();
+                  return Container(
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(),
+                  );
                 }
               default:
                 return Text("Here is Default Text");

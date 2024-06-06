@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_notes/constant/assert.dart';
+import 'package:my_notes/constant/text_decoration.dart';
 import 'package:my_notes/service/auth/auth_service.dart';
 import 'package:my_notes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:my_notes/utilities/generics/getArgument.dart';
@@ -123,9 +124,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               color: Colors.green,
               icon: const Icon(Icons.share_sharp)),
 
-          IconButton(onPressed: () { },
+          IconButton(onPressed: () {
+                  Navigator.pop(context);
+              },
               color: Colors.green,
-              icon: const Icon(Icons.check_rounded))
+              icon: const Icon(Icons.arrow_back_sharp),
+          ),
         ],
       ),
       body: FutureBuilder(
@@ -143,10 +147,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                   controller: _textTitleController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      fillColor: Colors.white,
-                      hintText: 'Write title here..'),
+                  decoration: AppCustomDecoration().appDefualtDecoration(),
                 ),
                 const SizedBox(
                   height: 20,
@@ -154,18 +155,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 TextField(
                   controller: _textBodyController,
                   keyboardType: TextInputType.multiline,
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          style: BorderStyle.none,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      fillColor: Colors.white,
-                    hintText: 'Write something ..'
-                  ),
+                  maxLines: 20,
+                  decoration: AppCustomDecoration().appDefualtDecoration(),
                 )
           ],
           )
